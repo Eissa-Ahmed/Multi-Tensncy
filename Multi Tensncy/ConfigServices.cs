@@ -15,6 +15,8 @@ public static class ConfigServices
         //Debendency Injection
         services.AddHttpContextAccessor();
         services.AddScoped<ITenantServices, TenantServices>();
+        services.AddScoped<IProductServices, ProductServices>();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
         //service configurations

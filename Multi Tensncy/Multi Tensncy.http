@@ -1,6 +1,11 @@
+@Multi Tensncy_HostAddress = https://localhost:44333
 @Multi_Tensncy_HostAddress = http://localhost:5157
 
 GET {{Multi_Tensncy_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+GET {{Multi Tensncy_HostAddress}}/api/product
 
 ###

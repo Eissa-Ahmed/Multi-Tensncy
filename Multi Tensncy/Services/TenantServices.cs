@@ -4,11 +4,14 @@ public class TenantServices : ITenantServices
 {
     private Tenant? tenant;
     private readonly TenantSettings tenantSettings;
-    private IHttpContextAccessor _httpContextAccessor;
+    private HttpContext httpContext;
     public TenantServices(IHttpContextAccessor httpContextAccessor, TenantSettings tenantSettings)
     {
-        _httpContextAccessor = httpContextAccessor;
+        httpContext = httpContextAccessor.HttpContext;
         this.tenantSettings = tenantSettings;
+
+        if (httpContext is null)
+            throw new Exception("httpContext Is Null");
 
         tenant = tenantSettings.Tenants.FirstOrDefault(i => i.Id.Equals(GetTenantIdFromHeader()));
 
@@ -34,13 +37,10 @@ public class TenantServices : ITenantServices
 
     private string? GetTenantIdFromHeader()
     {
-        /*if (_httpContextAccessor.HttpContext is null)
-            return null;*/
-
-        /*bool TenantIdIsExist = _httpContextAccessor.HttpContext.Request.Headers.TryGetValue("tenantId", out var TenantId);
+        bool TenantIdIsExist = httpContext.Request.Headers.TryGetValue("tenantId", out var TenantId);
         if (!TenantIdIsExist)
-            return null;*/
+            return null;
 
-        return "Id2";
+        return TenantId;
     }
 }
