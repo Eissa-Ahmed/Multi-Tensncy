@@ -21,7 +21,7 @@ public class ApplicationDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (_tenantServices.GetConnectionString() is not null)
-            if (_tenantServices.GetDatabaseProvider()!.ToLower().Equals("Sql Server"))
+            if (_tenantServices.GetDatabaseProvider()!.ToLower().Equals("Sql Server".ToLower()))
                 optionsBuilder.UseSqlServer(_tenantServices.GetConnectionString());
 
         base.OnConfiguring(optionsBuilder);

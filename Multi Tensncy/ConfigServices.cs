@@ -13,11 +13,28 @@ public static class ConfigServices
 
 
         //Debendency Injection
+        services.AddHttpContextAccessor();
         services.AddScoped<ITenantServices, TenantServices>();
 
 
         //service configurations
-        services.AddHttpContextAccessor();
+        if (tenantSettings.Defaults.DatabaseProvider.ToLower().Equals("Sql Server".ToLower()))
+        {
+            services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer());
+        }
+
+        foreach (var tenant in tenantSettings.Tenants)
+        {
+            var connectionString = tenant.ConnectionString ?? tenantSettings.Defaults.ConnectionString;
+            using (var scope = services.BuildServiceProvider().CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.SetConnectionString(connectionString);
+
+                if (dbContext.Database.GetPendingMigrations().Any())
+                    dbContext.Database.Migrate();
+            }
+        }
 
         return services;
     }
